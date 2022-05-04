@@ -1,14 +1,12 @@
-object ImageFrame: TImageFrame
+object AnimatedImageFrame: TAnimatedImageFrame
   Align = Client
   Size.Width = 320.000000000000000000
   Size.Height = 240.000000000000000000
   Size.PlatformDefault = False
-  object ContentImage: TImage
+  object ContentImage: TSkAnimatedImage
     OnTap = ContentImageTap
-    MultiResBitmap = <
-      item
-      end>
     Align = Client
+    HitTest = True
     Size.Width = 320.000000000000000000
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False

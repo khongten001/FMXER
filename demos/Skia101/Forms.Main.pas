@@ -31,6 +31,7 @@ uses
 
 , Routes.home
 , Routes.menu
+, Routes.image
 , Routes.Spinner
 ;
 
@@ -42,6 +43,9 @@ begin
 
   DefineHomeRoute;
   DefineMenuRoute;
+  DefineImageRoute;
+  DefineAnimatedImageRoute;
+  DefineSVGImageRoute;
   DefineSpinnerRoute;
 
   Navigator.RouteTo('menu');

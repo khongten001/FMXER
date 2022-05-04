@@ -8,7 +8,8 @@ uses
   Frames.Spinner in 'Frames.Spinner.pas' {SpinnerFrame: TFrame},
   Routes.home in 'Routes.home.pas',
   Routes.menu in 'Routes.menu.pas',
-  Routes.spinner in 'Routes.spinner.pas';
+  Routes.spinner in 'Routes.spinner.pas',
+  Routes.image in 'Routes.image.pas';
 
 {$R *.res}
 

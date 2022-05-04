@@ -260,6 +260,7 @@
         <DCCReference Include="Routes.home.pas"/>
         <DCCReference Include="Routes.menu.pas"/>
         <DCCReference Include="Routes.spinner.pas"/>
+        <DCCReference Include="Routes.image.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

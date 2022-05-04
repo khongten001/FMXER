@@ -67,6 +67,28 @@ begin
             end
           );
 
+          AList.AddItem('Image', 'Tap to close', -1
+          , procedure (const AItem: TListViewItem)
+            begin
+              Navigator.RouteTo('image');
+            end
+          );
+
+          AList.AddItem('Animated Image', 'Tap to close', -1
+          , procedure (const AItem: TListViewItem)
+            begin
+              Navigator.RouteTo('animatedImage');
+            end
+          );
+
+          AList.AddItem('SVG Image', 'Tap to close', -1
+          , procedure (const AItem: TListViewItem)
+            begin
+              Navigator.RouteTo('SVGImage');
+            end
+          );
+
+
         end
       );
     end
