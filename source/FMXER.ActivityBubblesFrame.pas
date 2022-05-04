@@ -10,14 +10,28 @@ uses
 type
   TActivityBubblesFrame = class(TFrame)
     SkAnimatedImage1: TSkAnimatedImage;
+    CaptionLabel: TSkLabel;
   private
-    { Private declarations }
+    function GetText: string;
+    procedure SetText(const Value: string);
   public
-    { Public declarations }
+    property Text: string read GetText write SetText;
   end;
 
 implementation
 
 {$R *.fmx}
+
+{ TActivityBubblesFrame }
+
+function TActivityBubblesFrame.GetText: string;
+begin
+  Result := CaptionLabel.Text;
+end;
+
+procedure TActivityBubblesFrame.SetText(const Value: string);
+begin
+  CaptionLabel.Text := Value;
+end;
 
 end.

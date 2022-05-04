@@ -221,4 +221,17 @@ object ActivityBubblesFrame: TActivityBubblesFrame
       6970223A302C226F70223A3132302C227374223A302C22626D223A307D5D2C22
       6D61726B657273223A5B5D7D}
   end
+  object CaptionLabel: TSkLabel
+    Align = Bottom
+    Position.Y = 408.000000000000000000
+    Size.Width = 348.000000000000000000
+    Size.Height = 0.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.HorzAlign = Center
+    TextSettings.MaxLines = 1
+    TextSettings.Trimming = Character
+    Words = <
+      item
+      end>
+  end
 end
