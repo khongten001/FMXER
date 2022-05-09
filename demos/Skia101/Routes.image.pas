@@ -19,6 +19,7 @@ uses
 , FMXER.AnimatedImageFrame
 , FMXER.SVGFrame
 , FMXER.BackgroundForm
+, FMXER.BackgroundFrame
 , FMXER.QRCodeFrame
 , FMXER.UI.Consts
 
@@ -105,80 +106,70 @@ end;
 
 procedure DefineQRCodeRoute;
 begin
-//  Navigator.DefineRoute<TBackgroundForm>('QRCode'
-//  , procedure (S: TBackgroundForm)
-//    begin
-//      S.Fill.Color := TAlphaColorRec.Silver;
-//
-//      S.SetContentAsFrame<TSVGFrame>(
-//        procedure (ImgF: TSVGFrame)
-//        begin
-//          ImgF.Margins.Rect := RectF(10, 10, 10, 10);
-//          ImgF.SVGSource := TQRCode.TextToSvg('https://t.me/skia4delphi');
-//
-//          ImgF.OnTapHandler :=
-//            procedure (AC: TObject; APoint: TPointF)
-//            begin
-//              if TPointF.PointInCircle(APoint, PointF(ImgF.ContentSvg.Width/2, ImgF.ContentSvg.Height/2), 100) then
-//                Navigator.CloseRoute('QRCode');
-//
-//            end;
-//        end
-//      );
-//
-//    end
-//  );
-
-
-  Navigator.DefineRoute<TBackgroundForm>('QRCode'
-  , procedure (S: TBackgroundForm)
+  Navigator.DefineRoute<TScaffoldForm>('QRCode'
+  , procedure (S: TScaffoldForm)
     begin
-      S.Fill.Color := TAlphaColorRec.White;
+      S.Title := 'QRCode';
 
-      S.SetContentAsFrame<TQRCodeFrame>(
-        procedure (QRF: TQRCodeFrame)
+      S.SetContentAsFrame<TBackgroundFrame>(
+        procedure (B: TBackgroundFrame)
         begin
-          QRF.Margins.Rect := RectF(50, 50, 50, 50);
-
-          TTask.Run(
-            procedure
+          B.Fill.Color := TAlphaColorRec.Aliceblue;
+          B.SetContentAsFrame<TQRCodeFrame>(
+            procedure (QRF: TQRCodeFrame)
             begin
-              while True do
-              begin
-                Sleep(750);
+              QRF.Margins.Rect := RectF(25, 25, 25, 25);
+              QRF.HitTest := True; // prevents click-through
 
-                if not Navigator.IsRouteActive('QRCode') then
-                  Break;
+              QRF.Content := 'Current date time is ' + DateTimeToStr(Now);
+              QRF.RadiusFactor := 0.1;
 
-                TThread.Synchronize(nil
-                , procedure
+              QRF.QRCodeLogo.LoadFromFile('C:\Sviluppo\Librerie\FMXER\media\FMXER_R_256.png');
+              QRF.QRCodeLogo.Width := 64;
+              QRF.QRCodeLogo.Height := 64;
+              QRF.QRCodeLogo.Visible := True;
+
+
+              TTask.Run(
+                procedure
+                begin
+                  while True do
                   begin
-                    if not Navigator.IsRouteActive('QRCode') then Exit;
+                    Sleep(750);
+                    if not (TNavigator.Initialized and Navigator.IsRouteActive('QRCode')) then
+                      Break;
 
-                    QRF.Content := 'Current time is ' + TimeToStr(Now);
-                  end
-                );
-              end;
+                    TThread.Synchronize(nil
+                    , procedure
+                      begin
+                        if not Navigator.IsRouteActive('QRCode') then
+                          Exit;
+                        QRF.Content := 'Time: ' + TimeToStr(Now);
+                        S.Title := 'QRCode ' + QRF.Content;
+                      end
+                    );
+                  end;
+                end
+              );
 
+              QRF.OnBeforePaint :=
+                procedure (APaint: ISkPaint; AModules: T2DBooleanArray)
+                begin
+                  APaint.Shader := TSkShader.MakeGradientLinear(
+                    PointF(6, Length(AModules) - 6), PointF(Length(AModules) - 6, 6)
+                  , TAppColors.MATERIAL_ORANGE_800
+                  , TAppColors.MATERIAL_AMBER_800
+                  , TSkTileMode.Clamp);
+                end;
+
+              QRF.OnTapHandler :=
+                procedure (AC: TObject; APoint: TPointF)
+                begin
+                  if TPointF.PointInCircle(APoint, PointF(QRF.QRCode.Width/2, QRF.QRCode.Height/2), 100) then
+                    Navigator.CloseRoute('QRCode');
+                end;
             end
           );
-
-          QRF.OnBeforePaint :=
-            procedure (APaint: ISkPaint; AModules: T2DBooleanArray)
-            begin
-              APaint.Shader := TSkShader.MakeGradientLinear(
-                PointF(6, Length(AModules) - 6), PointF(Length(AModules) - 6, 6)
-              , TAppColors.MATERIAL_BLUE_400
-              , TAppColors.MATERIAL_GREEN_400
-              , TSkTileMode.Clamp);
-            end;
-
-          QRF.OnTapHandler :=
-            procedure (AC: TObject; APoint: TPointF)
-            begin
-              if TPointF.PointInCircle(APoint, PointF(QRF.QRCode.Width/2, QRF.QRCode.Height/2), 100) then
-                Navigator.CloseRoute('QRCode');
-            end;
         end
       );
 

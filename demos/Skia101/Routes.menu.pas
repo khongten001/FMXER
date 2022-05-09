@@ -12,8 +12,9 @@ uses
 , FMXER.Navigator
 , FMXER.ScaffoldForm
 , FMXER.ListViewFrame
+, FMXER.QRCodeFrame
 
-, SubjectStand
+, SubjectStand, FMX.Types, System.Types
 ;
 
 procedure DefineMenuRoute;
@@ -22,6 +23,16 @@ begin
   , procedure (AMenu: TScaffoldForm)
     begin
       AMenu.Title := 'Select an entry';
+
+      AMenu.SetTitleDetailContentAsFrame<TQRCodeFrame>(
+        procedure (AQR: TQRCodeFrame)
+        begin
+          AQR.Content := 'https://github.com/andrea-magni/FMXER';
+          AQR.Align := TAlignLayout.Right;
+          AQR.Width := AMenu.TitleLayout.Height;
+          AQR.Margins.Rect := RectF(10, 10, 10, 10);
+        end
+      );
 
       AMenu.SetContentAsFrame<TListViewFrame>(
         procedure (AList: TListViewFrame)

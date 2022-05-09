@@ -22,8 +22,9 @@ type
   { TQRCodeRender }
 
   TQRCodeRender = record
-    class function MakeRounded(const AModules: T2DBooleanArray): IQRCodeRender; overload; static;
-    class function MakeRounded(const AModules: T2DBooleanArray; const ALogoModules: Integer; const AModuleSize: Single = 1): IQRCodeRender; overload; static;
+    class function MakeRounded(const AModules: T2DBooleanArray; const ARadiusFactor: Single = 0.1): IQRCodeRender; overload; static;
+    class function MakeRounded(const AModules: T2DBooleanArray; const ALogoModules: Integer;
+      const AModuleSize: Single = 1;  const ARadiusFactor: Single = 0.1): IQRCodeRender; overload; static;
   end;
 
 implementation
@@ -46,26 +47,27 @@ type
     FModuleCount: Integer;
     FModules: T2DBooleanArray;
     FModuleSize: Single;
+    FRadiusFactor: Single;
     function AsPath: ISkPath;
     function AsSVG: string; overload;
     function AsSVG(const APaint: ISkPaint): string; overload;
   public
-    constructor Create(const AModules: T2DBooleanArray; const ALogoModules: Integer; const AModuleSize: Single);
+    constructor Create(const AModules: T2DBooleanArray; const ALogoModules: Integer; const AModuleSize: Single; const ARadiusFactor: Single);
   end;
 
 { TQRCodeRender }
 
 class function TQRCodeRender.MakeRounded(
   const AModules: T2DBooleanArray; const ALogoModules: Integer;
-  const AModuleSize: Single): IQRCodeRender;
+  const AModuleSize: Single; const ARadiusFactor: Single): IQRCodeRender;
 begin
-  Result := TQRCodeRoundedRender.Create(AModules, ALogoModules, AModuleSize);
+  Result := TQRCodeRoundedRender.Create(AModules, ALogoModules, AModuleSize, ARadiusFactor);
 end;
 
 class function TQRCodeRender.MakeRounded(
-  const AModules: T2DBooleanArray): IQRCodeRender;
+  const AModules: T2DBooleanArray; const ARadiusFactor: Single): IQRCodeRender;
 begin
-  Result := MakeRounded(AModules, 0);
+  Result := MakeRounded(AModules, 0, 1, ARadiusFactor);
 end;
 
 { TQRCodeRoundedRender }
@@ -73,18 +75,16 @@ end;
 function TQRCodeRoundedRender.AsPath: ISkPath;
 
   procedure AddPositionPatternPath(const APathBuilder: ISkPathBuilder; const ARow, AColumn: Integer);
-  const
-    RadiusProportion = 1/3;
   var
     LRect: TRectF;
   begin
     APathBuilder.FillType := TSkPathFillType.EvenOdd;
     LRect := TRectF.Create(PointF(AColumn * FModuleSize, ARow * FModuleSize), PositionModulesCount * FModuleSize, PositionModulesCount * FModuleSize);
-    APathBuilder.AddRoundRect(TSkRoundRect.Create(LRect.Round, LRect.Width * RadiusProportion, LRect.Height * RadiusProportion));
+    APathBuilder.AddRoundRect(TSkRoundRect.Create(LRect.Round, LRect.Width * FRadiusFactor, LRect.Height * FRadiusFactor));
     LRect.Inflate(-FModuleSize, -FModuleSize);
-    APathBuilder.AddRoundRect(TSkRoundRect.Create(LRect.Round, LRect.Width * RadiusProportion, LRect.Height * RadiusProportion));
+    APathBuilder.AddRoundRect(TSkRoundRect.Create(LRect.Round, LRect.Width * FRadiusFactor, LRect.Height * FRadiusFactor));
     LRect.Inflate(-FModuleSize, -FModuleSize);
-    APathBuilder.AddRoundRect(TSkRoundRect.Create(LRect.Round, LRect.Width * RadiusProportion, LRect.Height * RadiusProportion));
+    APathBuilder.AddRoundRect(TSkRoundRect.Create(LRect.Round, LRect.Width * FRadiusFactor, LRect.Height * FRadiusFactor));
   end;
 
   procedure AddModuleRoundedDark(const APathBuilder: ISkPathBuilder; const ALeft, ATop, ARight, ABottom: Integer; const ARadius: Single; const NW, NE, SE, SW: Boolean);
@@ -140,8 +140,6 @@ function TQRCodeRoundedRender.AsPath: ISkPath;
   end;
 
   procedure AddModuleRounded(const APathBuilder: ISkPathBuilder; const ALeft, ATop, AWidth: Single; const ARow, ACol: Integer);
-  const
-    RadiusProportion = 0.5;
   var
     LRight: Integer;
     LBottom: Integer;
@@ -166,7 +164,7 @@ function TQRCodeRoundedRender.AsPath: ISkPath;
     LRowB := ARow + 1;
     LColL := ACol - 1;
     LColR := ACol + 1;
-    LRadius := AWidth * RadiusProportion;
+    LRadius := AWidth * FRadiusFactor;
     LCenter := IsDark(ARow, ACol);
     LNorthwest := IsDark(LRowT, LColL);
     LNorth := IsDark(LRowT, ACol);
@@ -227,7 +225,8 @@ begin
   end;
 end;
 
-constructor TQRCodeRoundedRender.Create(const AModules: T2DBooleanArray; const ALogoModules: Integer; const AModuleSize: Single);
+constructor TQRCodeRoundedRender.Create(const AModules: T2DBooleanArray;
+  const ALogoModules: Integer; const AModuleSize: Single; const ARadiusFactor: Single);
 
   procedure RemoveSquareArea(var AModules: T2DBooleanArray; const ARow, AColumn, ACount: Integer);
   var
@@ -245,6 +244,7 @@ begin
   FModuleSize := AModuleSize;
   FModuleCount := Length(AModules);
   FLogoModules := ALogoModules;
+  FRadiusFactor := ARadiusFactor;
   Assert(FModuleCount > ((PositionModulesCount + 1) * 2) + FLogoModules);
   Assert(((FModuleCount - FLogoModules) mod 2) = 0);
   // Remove position pattern

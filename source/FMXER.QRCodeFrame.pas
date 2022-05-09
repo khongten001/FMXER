@@ -23,6 +23,9 @@ type
     FOnTapHandler: TOnTapHandler;
     FContent: string;
     FOnBeforePaint: TOnBeforePaintHandler;
+    FRadiusFactor: Single;
+    procedure SetOnTapHandler(const Value: TOnTapHandler);
+    procedure SetRadiusFactor(const Value: Single);
   protected
     function GetSVGSource: string; inline;
     procedure SetSVGSource(const Value: string); inline;
@@ -30,16 +33,24 @@ type
     procedure SetOnBeforePaint(const Value: TOnBeforePaintHandler);
     procedure UpdateQRCode;
   public
+    constructor Create(AOwner: TComponent); override;
     property Content: string read FContent write SetContent;
+    property RadiusFactor: Single read FRadiusFactor write SetRadiusFactor;
     property SVGSource: string read GetSVGSource write SetSVGSource;
     property OnBeforePaint: TOnBeforePaintHandler read FOnBeforePaint write SetOnBeforePaint;
-    property OnTapHandler: TOnTapHandler read FOnTapHandler write FOnTapHandler;
+    property OnTapHandler: TOnTapHandler read FOnTapHandler write SetOnTapHandler;
   end;
 
 implementation
 
 {$R *.fmx}
 
+
+constructor TQRCodeFrame.Create(AOwner: TComponent);
+begin
+  inherited;
+  FRadiusFactor := 0.1;
+end;
 
 function TQRCodeFrame.GetSVGSource: string;
 begin
@@ -78,6 +89,21 @@ begin
   end;
 end;
 
+procedure TQRCodeFrame.SetOnTapHandler(const Value: TOnTapHandler);
+begin
+  FOnTapHandler := Value;
+  QRCode.HitTest := Assigned(FOnTapHandler);
+end;
+
+procedure TQRCodeFrame.SetRadiusFactor(const Value: Single);
+begin
+  if FRadiusFactor <> Value then
+  begin
+    FRadiusFactor := Value;
+    UpdateQRCode;
+  end;
+end;
+
 procedure TQRCodeFrame.SetSVGSource(const Value: string);
 begin
   QRCode.Svg.Source := Value;
@@ -85,7 +111,7 @@ end;
 
 procedure TQRCodeFrame.UpdateQRCode;
 begin
-  SVGSource := TQRCode.TextToSvg(FContent, FOnBeforePaint);
+  SVGSource := TQRCode.TextToSvg(FContent, FOnBeforePaint, FRadiusFactor);
 end;
 
 end.

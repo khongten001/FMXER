@@ -12,15 +12,14 @@ object QRCodeFrame: TQRCodeFrame
     OnMouseUp = QRCodeMouseUp
     object lytQRCodeLogo: TLayout
       Align = Center
+      Size.Width = 20.000000000000000000
+      Size.Height = 20.000000000000000000
+      Size.PlatformDefault = False
       TabOrder = 0
       object QRCodeLogo: TSkAnimatedImage
-        Align = Client
-        Margins.Left = -40.000000000000000000
-        Margins.Top = -40.000000000000000000
-        Margins.Right = -40.000000000000000000
-        Margins.Bottom = -40.000000000000000000
-        Size.Width = 130.000000000000000000
-        Size.Height = 130.000000000000000000
+        Align = Center
+        Size.Width = 64.000000000000000000
+        Size.Height = 64.000000000000000000
         Size.PlatformDefault = False
       end
     end

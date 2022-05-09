@@ -14,7 +14,8 @@ type
 
   TQRCode = class
   public
-    class function TextToSvg(const AContent: string; const ABeforePaint: TOnBeforePaintHandler = nil): string;
+    class function TextToSvg(const AContent: string;
+      const ABeforePaint: TOnBeforePaintHandler = nil; const ARadiusFactor: Single = 0.1): string;
   end;
 
 
@@ -24,12 +25,11 @@ implementation
 
 { TQRCode }
 
-class function TQRCode.TextToSvg(const AContent: string; const ABeforePaint: TOnBeforePaintHandler): string;
+class function TQRCode.TextToSvg(const AContent: string;
+  const ABeforePaint: TOnBeforePaintHandler; const ARadiusFactor: Single): string;
 const
   LogoModules = 1;
-  LogoSize = 5;
-  F = False;
-  T = True;
+  LogoSize = 1;
 var
   LQRCode: TDelphiZXingQRCode;
   LPaint: ISkPaint;
@@ -56,7 +56,7 @@ begin
   LPaint := TSkPaint.Create;
   if Assigned(ABeforePaint) then
     ABeforePaint(LPaint, LModules);
-  Result := TQRCodeRender.MakeRounded(LModules, LogoModules, 1).AsSVG(LPaint);
+  Result := TQRCodeRender.MakeRounded(LModules, LogoModules, LogoSize, ARadiusFactor).AsSVG(LPaint);
 end;
 
 end.
