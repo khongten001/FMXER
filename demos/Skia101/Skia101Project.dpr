@@ -9,7 +9,9 @@ uses
   Routes.home in 'Routes.home.pas',
   Routes.menu in 'Routes.menu.pas',
   Routes.spinner in 'Routes.spinner.pas',
-  Routes.image in 'Routes.image.pas';
+  Routes.image in 'Routes.image.pas',
+  QRCode.Utils in '..\..\source\QRCode.Utils.pas',
+  FMXER.QRCodeFrame in '..\..\source\FMXER.QRCodeFrame.pas' {QRCodeFrame: TFrame};
 
 {$R *.res}
 

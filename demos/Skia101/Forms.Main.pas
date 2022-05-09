@@ -47,6 +47,7 @@ begin
   DefineAnimatedImageRoute;
   DefineSVGImageRoute;
   DefineSpinnerRoute;
+  DefineQRCodeRoute;
 
   Navigator.RouteTo('menu');
 end;

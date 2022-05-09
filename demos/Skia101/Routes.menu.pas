@@ -89,6 +89,13 @@ begin
           );
 
 
+          AList.AddItem('QR Code', 'Tap to close', -1
+          , procedure (const AItem: TListViewItem)
+            begin
+              Navigator.RouteTo('QRCode');
+            end
+          );
+
         end
       );
     end
