@@ -6,9 +6,11 @@ object PaintBoxFrame: TPaintBoxFrame
   object PaintBox: TSkPaintBox
     OnTap = PaintBoxTap
     Align = Client
+    ClipChildren = True
     Size.Width = 320.000000000000000000
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False
     OnMouseUp = PaintBoxMouseUp
+    OnDraw = PaintBoxDraw
   end
 end

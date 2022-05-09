@@ -264,12 +264,7 @@
         <DCCReference Include="Routes.menu.pas"/>
         <DCCReference Include="Routes.spinner.pas"/>
         <DCCReference Include="Routes.image.pas"/>
-        <DCCReference Include="..\..\source\QRCode.Utils.pas"/>
-        <DCCReference Include="..\..\source\FMXER.QRCodeFrame.pas">
-            <Form>QRCodeFrame</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
+        <DCCReference Include="Routes.freeHandDrawing.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

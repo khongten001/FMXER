@@ -121,12 +121,13 @@ begin
               QRF.Margins.Rect := RectF(25, 25, 25, 25);
               QRF.HitTest := True; // prevents click-through
 
-              QRF.Content := 'Current date time is ' + DateTimeToStr(Now);
+              QRF.Content := '';
+//              QRF.Content := 'Time: ' + TimeToStr(Now);
               QRF.RadiusFactor := 0.1;
 
               QRF.QRCodeLogo.LoadFromFile('C:\Sviluppo\Librerie\FMXER\media\FMXER_R_256.png');
-              QRF.QRCodeLogo.Width := 64;
-              QRF.QRCodeLogo.Height := 64;
+              QRF.QRCodeLogo.Width := 128;
+              QRF.QRCodeLogo.Height := 128;
               QRF.QRCodeLogo.Visible := True;
 
 
@@ -135,11 +136,7 @@ begin
                 begin
                   while True do
                   begin
-                    Sleep(750);
-                    if not (TNavigator.Initialized and Navigator.IsRouteActive('QRCode')) then
-                      Break;
-
-                    TThread.Synchronize(nil
+                    TThread.Queue(nil
                     , procedure
                       begin
                         if not Navigator.IsRouteActive('QRCode') then
@@ -148,6 +145,11 @@ begin
                         S.Title := 'QRCode ' + QRF.Content;
                       end
                     );
+
+                    Sleep(500);
+
+                    if not (TNavigator.Initialized and Navigator.IsRouteActive('QRCode')) then
+                      Exit;
                   end;
                 end
               );
@@ -158,7 +160,7 @@ begin
                   APaint.Shader := TSkShader.MakeGradientLinear(
                     PointF(6, Length(AModules) - 6), PointF(Length(AModules) - 6, 6)
                   , TAppColors.MATERIAL_ORANGE_800
-                  , TAppColors.MATERIAL_AMBER_800
+                  , TAppColors.MATERIAL_DEEP_PURPLE_400
                   , TSkTileMode.Clamp);
                 end;
 

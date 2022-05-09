@@ -50,6 +50,9 @@ constructor TQRCodeFrame.Create(AOwner: TComponent);
 begin
   inherited;
   FRadiusFactor := 0.1;
+  FContent := '';
+  FOnBeforePaint := nil;
+  FOnTapHandler := nil;
 end;
 
 function TQRCodeFrame.GetSVGSource: string;

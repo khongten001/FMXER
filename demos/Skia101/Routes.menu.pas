@@ -7,14 +7,17 @@ procedure DefineMenuRoute;
 implementation
 
 uses
-  FMX.ListView.Appearances
+ System.Types, System.UITypes
+, FMX.Types, FMX.ListView.Appearances
+, Skia, QRCode.Render
 
 , FMXER.Navigator
 , FMXER.ScaffoldForm
 , FMXER.ListViewFrame
 , FMXER.QRCodeFrame
-
-, SubjectStand, FMX.Types, System.Types
+, FMXER.BackgroundFrame
+, FMXER.UI.Consts
+, SubjectStand
 ;
 
 procedure DefineMenuRoute;
@@ -24,13 +27,30 @@ begin
     begin
       AMenu.Title := 'Select an entry';
 
-      AMenu.SetTitleDetailContentAsFrame<TQRCodeFrame>(
-        procedure (AQR: TQRCodeFrame)
+      AMenu.SetTitleDetailContentAsFrame<TBackgroundFrame>(
+        procedure (B: TBackgroundFrame)
         begin
-          AQR.Content := 'https://github.com/andrea-magni/FMXER';
-          AQR.Align := TAlignLayout.Right;
-          AQR.Width := AMenu.TitleLayout.Height;
-          AQR.Margins.Rect := RectF(10, 10, 10, 10);
+          B.Fill.Color := TAlphaColorRec.Aliceblue;
+          B.Align := TAlignLayout.Right;
+          B.Width := AMenu.TitleLayout.Height - 4;
+          B.Margins.Rect := RectF(2, 2, 2, 2);
+
+          B.SetContentAsFrame<TQRCodeFrame>(
+            procedure (AQR: TQRCodeFrame)
+            begin
+              AQR.Margins.Rect := RectF(2, 2, 2, 2);
+              AQR.Content := 'https://github.com/andrea-magni/FMXER';
+
+//              AQR.QRCode.Svg.OverrideColor := TAppColors.PrimaryColor;
+
+              AQR.OnBeforePaint :=
+                procedure (APaint: ISkPaint; AModules: T2DBooleanArray)
+                begin
+                  APaint.Shader := TSkShader.MakeColor(TAppColors.PrimaryColor);
+                end;
+
+            end
+          );
         end
       );
 
@@ -106,6 +126,14 @@ begin
               Navigator.RouteTo('QRCode');
             end
           );
+
+          AList.AddItem('Free hand drawing', '', -1
+          , procedure (const AItem: TListViewItem)
+            begin
+              Navigator.RouteTo('freeHandDrawing');
+            end
+          );
+
 
         end
       );

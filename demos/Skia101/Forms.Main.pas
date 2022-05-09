@@ -33,6 +33,7 @@ uses
 , Routes.menu
 , Routes.image
 , Routes.Spinner
+, Routes.freeHandDrawing
 ;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -48,6 +49,7 @@ begin
   DefineSVGImageRoute;
   DefineSpinnerRoute;
   DefineQRCodeRoute;
+  DefineFreeHandDrawingRoute;
 
   Navigator.RouteTo('menu');
 end;
