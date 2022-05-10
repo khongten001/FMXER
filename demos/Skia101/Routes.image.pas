@@ -2,7 +2,8 @@ unit Routes.image;
 
 interface
 
-uses System.Classes, System.SysUtils, System.Types;
+uses System.Classes, System.SysUtils, System.Types
+, FMX.Types;
 
 procedure DefineImageRoute;
 procedure DefineAnimatedImageRoute;
@@ -12,7 +13,7 @@ procedure DefineQRCodeRoute;
 implementation
 
 uses
-  System.Threading
+  System.Threading, IOUtils
 , FMXER.Navigator
 , FMXER.ScaffoldForm
 , FMXER.ImageFrame
@@ -25,7 +26,10 @@ uses
 
 , System.UITypes
 , Skia, QRCode.Render
+
+, Utils
 ;
+
 
 procedure DefineImageRoute;
 begin
@@ -37,13 +41,12 @@ begin
       S.SetContentAsFrame<TImageFrame>(
         procedure (ImgF: TImageFrame)
         begin
-          ImgF.ContentImage.Bitmap.LoadFromFile('C:\Sviluppo\Librerie\FMXER\media\FMXER_256.png');
-          ImgF.OnTapHandler :=
-            procedure (AImg: TObject; APoint: TPointF)
-            begin
-              if TPointF.PointInCircle(APoint, PointF(ImgF.ContentImage.Width/2, ImgF.ContentImage.Height/2), 100) then
-                Navigator.CloseRoute('image');
+          ImgF.ContentImage.Bitmap.LoadFromFile(LocalFile('FMXER_256.png'));
 
+          ImgF.OnTapHandler :=
+            procedure (AImg: TFMXObject; APoint: TPointF)
+            begin
+              Navigator.CloseRoute('image');
             end;
         end
       );
@@ -61,13 +64,11 @@ begin
       S.SetContentAsFrame<TAnimatedImageFrame>(
         procedure (ImgF: TAnimatedImageFrame)
         begin
-          ImgF.Image.LoadFromFile('C:\Sviluppo\Librerie\FMXER\media\lottie_bubbles_MATERIAL_AMBER_800.json');
+          ImgF.Image.LoadFromFile(LocalFile('lottie_bubbles_MATERIAL_AMBER_800.json'));
           ImgF.OnTapHandler :=
-            procedure (AImg: TObject; APoint: TPointF)
+            procedure (AImg: TFMXObject; APoint: TPointF)
             begin
-              if TPointF.PointInCircle(APoint, PointF(ImgF.Image.Width/2, ImgF.Image.Height/2), 100) then
-                Navigator.CloseRoute('animatedImage');
-
+              Navigator.CloseRoute('animatedImage');
             end;
         end
       );
@@ -87,12 +88,11 @@ begin
       S.SetContentAsFrame<TSVGFrame>(
         procedure (ImgF: TSVGFrame)
         begin
-          ImgF.LoadFromFile('C:\Sviluppo\Librerie\FMXER\media\Tesla.svg');
+          ImgF.LoadFromFile(LocalFile('tesla.svg'));
           ImgF.OnTapHandler :=
-            procedure (AImg: TObject; APoint: TPointF)
+            procedure (AImg: TFMXObject; APoint: TPointF)
             begin
-              if TPointF.PointInCircle(APoint, PointF(ImgF.SVG.Width/2, ImgF.SVG.Height/2), 100) then
-                Navigator.CloseRoute('SVGImage');
+              Navigator.CloseRoute('SVGImage');
             end;
         end
       );
@@ -122,14 +122,12 @@ begin
               QRF.HitTest := True; // prevents click-through
 
               QRF.Content := '';
-//              QRF.Content := 'Time: ' + TimeToStr(Now);
               QRF.RadiusFactor := 0.1;
 
-              QRF.QRCodeLogo.LoadFromFile('C:\Sviluppo\Librerie\FMXER\media\FMXER_R_256.png');
+              QRF.QRCodeLogo.LoadFromFile(LocalFile('FMXER_R_256.png'));
               QRF.QRCodeLogo.Width := 128;
               QRF.QRCodeLogo.Height := 128;
               QRF.QRCodeLogo.Visible := True;
-
 
               TTask.Run(
                 procedure
@@ -158,17 +156,25 @@ begin
                 procedure (APaint: ISkPaint; AModules: T2DBooleanArray)
                 begin
                   APaint.Shader := TSkShader.MakeGradientLinear(
-                    PointF(6, Length(AModules) - 6), PointF(Length(AModules) - 6, 6)
+                    PointF(Length(AModules) - 6, 6)
+                  , PointF(6, Length(AModules) - 6)
+
                   , TAppColors.MATERIAL_ORANGE_800
                   , TAppColors.MATERIAL_DEEP_PURPLE_400
                   , TSkTileMode.Clamp);
+
+//                  APaint.Shader := TSkShader.MakeGradientRadial(
+//                    PointF(100, 100), 100
+//                  , TAppColors.MATERIAL_ORANGE_800
+//                  , TAppColors.MATERIAL_DEEP_PURPLE_400
+//                  );
+
                 end;
 
               QRF.OnTapHandler :=
-                procedure (AC: TObject; APoint: TPointF)
+                procedure (AC: TFMXObject; APoint: TPointF)
                 begin
-                  if TPointF.PointInCircle(APoint, PointF(QRF.QRCode.Width/2, QRF.QRCode.Height/2), 100) then
-                    Navigator.CloseRoute('QRCode');
+                  Navigator.CloseRoute('QRCode');
                 end;
             end
           );

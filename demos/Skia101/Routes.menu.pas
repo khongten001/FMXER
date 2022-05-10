@@ -16,8 +16,13 @@ uses
 , FMXER.ListViewFrame
 , FMXER.QRCodeFrame
 , FMXER.BackgroundFrame
+, FMXER.StackFrame
+, FMXER.SVGFrame
+, FMXER.AnimatedImageFrame
 , FMXER.UI.Consts
 , SubjectStand
+
+, Utils
 ;
 
 procedure DefineMenuRoute;
@@ -42,7 +47,6 @@ begin
               AQR.Content := 'https://github.com/andrea-magni/FMXER';
 
 //              AQR.QRCode.Svg.OverrideColor := TAppColors.PrimaryColor;
-
               AQR.OnBeforePaint :=
                 procedure (APaint: ISkPaint; AModules: T2DBooleanArray)
                 begin
@@ -54,86 +58,116 @@ begin
         end
       );
 
-      AMenu.SetContentAsFrame<TListViewFrame>(
-        procedure (AList: TListViewFrame)
+      AMenu.SetContentAsFrame<TStackFrame>(
+        procedure (Stack: TStackFrame)
         begin
-          AList.ItemAppearance := 'ListItemRightDetail';
-
-          AList.AddItem('Item spinner 1', '1 second', -1
-          , procedure (const AItem: TListViewItem)
+          Stack.AddFrame<TListViewFrame>(
+            procedure (AList: TListViewFrame)
             begin
-              Navigator.RouteTo('spinner', True);
-              TDelayedAction.Execute(1000
-              , procedure
+              AList.ListView.Transparent := True;
+              AList.ItemAppearance := 'ListItemRightDetail';
+
+              AList.AddItem('Item spinner 1', '1 second', -1
+              , procedure (const AItem: TListViewItem)
                 begin
-                  Navigator.CloseRoute('spinner', True);
+                  Navigator.RouteTo('spinner', True);
+                  TDelayedAction.Execute(1000
+                  , procedure
+                    begin
+                      Navigator.CloseRoute('spinner', True);
+                    end
+                  );
+                end
+              );
+
+              AList.AddItem('Item spinner 2', '5 seconds', -1
+              , procedure (const AItem: TListViewItem)
+                begin
+                  Navigator.RouteTo('spinner', True);
+                  TDelayedAction.Execute(5000
+                  , procedure
+                    begin
+                      Navigator.CloseRoute('spinner', True);
+                    end
+                  );
+                end
+              );
+
+              AList.AddItem('Item spinner 3', '10 seconds', -1
+              , procedure (const AItem: TListViewItem)
+                begin
+                  Navigator.RouteTo('spinner', True);
+                  TDelayedAction.Execute(10000
+                  , procedure
+                    begin
+                      Navigator.CloseRoute('spinner', True);
+                    end
+                  );
+                end
+              );
+
+              AList.AddItem('Image', 'Tap to close', -1
+              , procedure (const AItem: TListViewItem)
+                begin
+                  Navigator.RouteTo('image');
+                end
+              );
+
+              AList.AddItem('Animated Image', 'Tap to close', -1
+              , procedure (const AItem: TListViewItem)
+                begin
+                  Navigator.RouteTo('animatedImage');
+                end
+              );
+
+              AList.AddItem('SVG Image', 'Tap to close', -1
+              , procedure (const AItem: TListViewItem)
+                begin
+                  Navigator.RouteTo('SVGImage');
+                end
+              );
+
+
+              AList.AddItem('QR Code', 'Tap to close', -1
+              , procedure (const AItem: TListViewItem)
+                begin
+                  Navigator.RouteTo('QRCode');
+                end
+              );
+
+              AList.AddItem('Free hand drawing', '', -1
+              , procedure (const AItem: TListViewItem)
+                begin
+                  Navigator.RouteTo('freeHandDrawing');
                 end
               );
             end
           );
 
-          AList.AddItem('Item spinner 2', '5 seconds', -1
-          , procedure (const AItem: TListViewItem)
+//          Stack.AddFrame<TSVGFrame>(
+//            procedure (SVG: TSVGFrame)
+//            begin
+//              SVG.HitTest := False;
+//              SVG.Opacity := 0.2;
+//              SVG.LoadFromFile(LocalFile('tesla.svg'));
+//            end
+//          );
+
+          Stack.AddFrame<TAnimatedImageFrame>(
+            procedure (Ani: TAnimatedImageFrame)
             begin
-              Navigator.RouteTo('spinner', True);
-              TDelayedAction.Execute(5000
+              Ani.HitTest := True;
+              Ani.Opacity := 0.2;
+              Ani.ContentImage.LoadFromFile(LocalFile('spinner-loader.json'));
+              TDelayedAction.Execute(3000
               , procedure
                 begin
-                  Navigator.CloseRoute('spinner', True);
+                  Stack.CloseFrame('spinner');
                 end
               );
             end
+          , 'spinner'
           );
-
-          AList.AddItem('Item spinner 3', '10 seconds', -1
-          , procedure (const AItem: TListViewItem)
-            begin
-              Navigator.RouteTo('spinner', True);
-              TDelayedAction.Execute(10000
-              , procedure
-                begin
-                  Navigator.CloseRoute('spinner', True);
-                end
-              );
-            end
-          );
-
-          AList.AddItem('Image', 'Tap to close', -1
-          , procedure (const AItem: TListViewItem)
-            begin
-              Navigator.RouteTo('image');
-            end
-          );
-
-          AList.AddItem('Animated Image', 'Tap to close', -1
-          , procedure (const AItem: TListViewItem)
-            begin
-              Navigator.RouteTo('animatedImage');
-            end
-          );
-
-          AList.AddItem('SVG Image', 'Tap to close', -1
-          , procedure (const AItem: TListViewItem)
-            begin
-              Navigator.RouteTo('SVGImage');
-            end
-          );
-
-
-          AList.AddItem('QR Code', 'Tap to close', -1
-          , procedure (const AItem: TListViewItem)
-            begin
-              Navigator.RouteTo('QRCode');
-            end
-          );
-
-          AList.AddItem('Free hand drawing', '', -1
-          , procedure (const AItem: TListViewItem)
-            begin
-              Navigator.RouteTo('freeHandDrawing');
-            end
-          );
-
 
         end
       );

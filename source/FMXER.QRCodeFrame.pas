@@ -10,7 +10,7 @@ uses
 ;
 
 type
-  TOnTapHandler = reference to procedure(AImage: TObject; APoint: TPointF);
+  TOnTapHandler = reference to procedure(AImage: TFMXObject; APoint: TPointF);
 
   TQRCodeFrame = class(TFrame)
     QRCode: TSkSvg;
@@ -32,6 +32,7 @@ type
     procedure SetContent(const Value: string);
     procedure SetOnBeforePaint(const Value: TOnBeforePaintHandler);
     procedure UpdateQRCode;
+    procedure HitTestChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Content: string read FContent write SetContent;
@@ -58,6 +59,17 @@ end;
 function TQRCodeFrame.GetSVGSource: string;
 begin
   Result := QRCode.Svg.Source;
+end;
+
+procedure TQRCodeFrame.HitTestChanged;
+begin
+  inherited;
+  if Assigned(QRCode) then
+    QRCode.HitTest := HitTest;
+//  if Assigned(lytQRCodeLogo) then
+//    lytQRCodeLogo.HitTest := HitTest;
+//  if Assigned(QRCodeLogo) then
+//    QRCodeLogo.HitTest := HitTest;
 end;
 
 procedure TQRCodeFrame.QRCodeMouseUp(Sender: TObject; Button: TMouseButton;
@@ -95,7 +107,6 @@ end;
 procedure TQRCodeFrame.SetOnTapHandler(const Value: TOnTapHandler);
 begin
   FOnTapHandler := Value;
-  QRCode.HitTest := Assigned(FOnTapHandler);
 end;
 
 procedure TQRCodeFrame.SetRadiusFactor(const Value: Single);

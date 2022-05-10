@@ -10,7 +10,8 @@ uses
   Routes.menu in 'Routes.menu.pas',
   Routes.spinner in 'Routes.spinner.pas',
   Routes.image in 'Routes.image.pas',
-  Routes.freeHandDrawing in 'Routes.freeHandDrawing.pas';
+  Routes.freeHandDrawing in 'Routes.freeHandDrawing.pas',
+  Utils in 'Utils.pas';
 
 {$R *.res}
 

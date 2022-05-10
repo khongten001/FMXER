@@ -29,6 +29,7 @@ type
     procedure SetSearchVisible(const Value: Boolean);
   protected
     procedure RebuildItems; virtual;
+    procedure HitTestChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -121,6 +122,13 @@ end;
 function TListViewFrame.GetSelectedItem: TListViewItem;
 begin
   Result := ListView.Selected as TListViewItem;
+end;
+
+procedure TListViewFrame.HitTestChanged;
+begin
+  inherited;
+  if Assigned(ListView) then
+    ListView.HitTest := HitTest;
 end;
 
 procedure TListViewFrame.ListViewItemClick(const Sender: TObject;

@@ -37,8 +37,8 @@ begin
           B.Align := TAlignLayout.Right;
           B.Text := 'Back';
           B.Margins.Rect := RectF(0, 5, 0, 5);
-          B.OnClickProc :=
-            procedure (BF: TButtonFrame)
+          B.OnClickHandler :=
+            procedure
             begin
               Navigator.CloseRoute('freeHandDrawing');
             end;

@@ -8,7 +8,7 @@ uses
   Skia, Skia.FMX;
 
 type
-  TOnTapHandler = reference to procedure(AImage: TObject; APoint: TPointF);
+  TOnTapHandler = reference to procedure(AImage: TFMXObject; APoint: TPointF);
 
   TSVGFrame = class(TFrame)
     ContentSvg: TSkSvg;
@@ -19,6 +19,8 @@ type
     FOnTapHandler: TOnTapHandler;
     function GetSVGSource: string;
     procedure SetSVGSource(const Value: string);
+   protected
+     procedure HitTestChanged; override;
   public
     procedure LoadFromFile(const AFileName: string); overload;
     procedure LoadFromFile(const AFileName: string; const AEncoding: TEncoding); overload;
@@ -52,6 +54,13 @@ end;
 function TSVGFrame.GetSVGSource: string;
 begin
   Result := SVG.Svg.Source;
+end;
+
+procedure TSVGFrame.HitTestChanged;
+begin
+  inherited;
+  if Assigned(ContentSvg) then
+    ContentSvg.HitTest := HitTest;
 end;
 
 procedure TSVGFrame.LoadFromFile(const AFileName: string);

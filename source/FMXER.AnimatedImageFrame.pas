@@ -8,7 +8,7 @@ uses
   Skia, Skia.FMX;
 
 type
-  TOnTapHandler = reference to procedure(AImage: TObject; APoint: TPointF);
+  TOnTapHandler = reference to procedure(AImage: TFMXObject; APoint: TPointF);
 
   TAnimatedImageFrame = class(TFrame)
     ContentImage: TSkAnimatedImage;
@@ -17,7 +17,8 @@ type
       Shift: TShiftState; X, Y: Single);
   private
     FOnTapHandler: TOnTapHandler;
-
+  protected
+    procedure HitTestChanged; override;
   public
     property Image: TSkAnimatedImage read ContentImage;
     property OnTapHandler: TOnTapHandler read FOnTapHandler write FOnTapHandler;
@@ -40,6 +41,13 @@ procedure TAnimatedImageFrame.ContentImageTap(Sender: TObject;
 begin
   if Assigned(FOnTapHandler) then
     FOnTapHandler(ContentImage, Point);
+end;
+
+procedure TAnimatedImageFrame.HitTestChanged;
+begin
+  inherited;
+  if Assigned(ContentImage) then
+    ContentImage.HitTest := HitTest;
 end;
 
 end.
