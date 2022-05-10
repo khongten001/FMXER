@@ -64,7 +64,7 @@ begin
           Stack.AddFrame<TListViewFrame>(
             procedure (AList: TListViewFrame)
             begin
-              AList.ListView.Transparent := True;
+//              AList.ListView.Transparent := True;
               AList.ItemAppearance := 'ListItemRightDetail';
 
               AList.AddItem('Item spinner 1', '1 second', -1
@@ -152,21 +152,32 @@ begin
 //              SVG.LoadFromFile(LocalFile('tesla.svg'));
 //            end
 //          );
-
-          Stack.AddFrame<TAnimatedImageFrame>(
-            procedure (Ani: TAnimatedImageFrame)
+          AMenu.AddActionButton('Spin'
+          , procedure
             begin
-              Ani.HitTest := True;
-              Ani.Opacity := 0.2;
-              Ani.ContentImage.LoadFromFile(LocalFile('spinner-loader.json'));
-              TDelayedAction.Execute(3000
-              , procedure
+              Stack.AddFrame<TAnimatedImageFrame>(
+                procedure (Ani: TAnimatedImageFrame)
                 begin
-                  Stack.CloseFrame('spinner');
+//                  Ani.HitTest := True;
+                  Ani.Opacity := 0.2;
+                  Ani.ContentImage.LoadFromFile(LocalFile('spinner-loader.json'));
+
+//                  TDelayedAction.Execute(3000
+//                  , procedure
+//                    begin
+//                      Stack.CloseFrame('spinner');
+//                    end
+//                  );
+                  Ani.OnTapHandler :=
+                    procedure (AObj: TFMXObject; APoint: TPointF)
+                    begin
+                      Stack.CloseFrame('spinner');
+                    end;
+
                 end
+              , 'spinner'
               );
             end
-          , 'spinner'
           );
 
         end
